@@ -1,3 +1,16 @@
-2025/06/30-10:49:56.399 2990 Recovering log #3
-2025/06/30-10:49:56.407 2990 Delete type=0 #3
-2025/06/30-10:49:56.407 2990 Delete type=3 #2
+2025/07/01-17:38:33.096 3fac Recovering log #74
+2025/07/01-17:38:33.096 3fac Level-0 table #76: started
+2025/07/01-17:38:33.108 3fac Level-0 table #76: 386 bytes OK
+2025/07/01-17:38:33.115 3fac Delete type=0 #74
+2025/07/01-17:38:33.115 3fac Delete type=3 #73
+2025/07/01-17:38:33.115 3fe8 Compacting 4@0 + 2@1 files
+2025/07/01-17:38:33.177 3fe8 Generated table #78@0: 45317 keys, 2196606 bytes
+2025/07/01-17:38:33.230 3fe8 Generated table #79@0: 42654 keys, 2069043 bytes
+2025/07/01-17:38:33.230 3fe8 Compacted 4@0 + 2@1 files => 4265649 bytes
+2025/07/01-17:38:33.234 3fe8 compacted to: files[ 0 2 0 0 0 0 0 ]
+2025/07/01-17:38:33.234 3fe8 Delete type=2 #60
+2025/07/01-17:38:33.234 3fe8 Delete type=2 #61
+2025/07/01-17:38:33.234 3fe8 Delete type=2 #65
+2025/07/01-17:38:33.234 3fe8 Delete type=2 #68
+2025/07/01-17:38:33.235 3fe8 Delete type=2 #71
+2025/07/01-17:38:33.235 3fe8 Delete type=2 #76

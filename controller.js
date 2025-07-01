@@ -1,5 +1,5 @@
 const Joi = require("joi");
-const { XlevelDb, Xcode } = require("xsupport")
+const { XlevelDb, Xcode, Xtime } = require("xsupport")
 
 const db = new XlevelDb('pool');
 
@@ -25,8 +25,8 @@ const add = async (req, res) => {
     return res.json({ success: true, keys: data.map(v => v.key) });
 }
 const get = async (req, res) => {
-    const { count = 1 } = req.query;
-    const works = await db.shiftMany('A', count, { action: 'move', newType: 'B' });
+    const { count } = req.query;
+    const works = await db.shiftMany('A', count || 1, { action: 'move', newType: 'B' });
     return res.json({ success: true, works });
 }
 const submit = async (req, res) => {
@@ -45,7 +45,42 @@ const views = async (req, res) => {
     const data = _validate(schema, req.body);
     return res.json({ success: true, results: await db.getMany('C', data) });
 }
-const count = async (req, res) => res.json({ success: true, pending: await db.count('A'), in_progress: await db.count('B'), completed: await db.count('C') });
+const worker = {};
+const count = async (req, res) => {
+    console.log(123);
+    
+    const [pending, in_progress, completed] = await Promise.all([
+        db.count('A'),
+        db.count('B'),
+        db.count('C')
+    ]);
+    res.json({
+        success: true,
+        workers: {
+            length: Object.keys(worker).length,
+            ntask: Object.values(worker).reduce((o, v) => o + v.ntask, 0)
+        },
+        work: { pending, in_progress, completed },
+        speed: completed * 6
+    });
+}
+const sign = async (req, res) => {
+    const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+    let ntask = _validate(Joi.number(), req.query.ntask || 0);
+    worker[clientIp] = { createAt: Date.now(), ntask };
+    return res.json({ success: true });
+}
+
+(async () => {
+    while (true) {
+        await db.cleanup('B', 600, { newType: 'A' });
+        await db.cleanup('C', 600);
+        for (const key in worker) {
+            if ((worker[key].createAt - Date.now()) > 600000) delete worker[key];
+        }
+        await Xtime.sleep(60000);
+    }
+})();
 
 module.exports = {
     db,
@@ -54,5 +89,6 @@ module.exports = {
     submit,
     view,
     views,
-    count
+    count,
+    sign
 }
